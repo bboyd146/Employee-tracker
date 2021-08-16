@@ -1,6 +1,7 @@
 const getConnection = require('./connection');
 const express = require('express');
 const app = express();
+const inquirer = require('inquirer');
 
 const { getQuery } = require('./orm');
 
