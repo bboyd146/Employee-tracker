@@ -36,18 +36,18 @@ loadMainPrompts = () => {
             message: "What would you like to do?",
             choices: [
                 "View All Employees",
-                "View All Employees By Department",
-                "View All Employees By Manager",
+                // "View All Employees By Department",
+                // "View All Employees By Manager",
                 "Add Employee",
-                "Remove Employee",
+                // "Remove Employee",
                 "Update Employee Role",
-                "Update Employee Manager",
+                // "Update Employee Manager",
                 "View All Roles",
                 "Add Role",
-                "Remove Role",
+                // "Remove Role",
                 "View All Departments",
                 "Add Department",
-                "Remove Department",
+                // "Remove Department",
                 "Quit",
             ]
         }
@@ -116,7 +116,18 @@ const viewAllDepartments = async () => {
 
 const viewAllEmployees = () => {
     try {
-        const query = 'SELECT * FROM employee';
+        const query = `SELECT 
+        employee.id as emp_id, 
+        employee.first_name, 
+        employee.last_name, 
+        roles.title, 
+        department.dep_name, 
+        roles.salary, 
+        CONCAT(manager.first_name, ' ', manager.last_name) AS manager
+        FROM employee
+        LEFT JOIN roles ON employee.role_id = roles.id
+        LEFT JOIN department ON department.id = roles.department_id
+        LEFT JOIN employee manager ON manager.id = employee.manager_id`;
         connection.query(query, (req, res) => {
             console.table(res);
             loadMainPrompts();
