@@ -16,7 +16,7 @@ INSERT INTO roles (title, salary, department_id)
 
 INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES
-    ('John', 'Weathersbey', 1, NULL),
+    ('John', 'Weathersbey', 1, 1),
     ('Jeremy', 'Chan', 2, 1),
-    ('Michael', 'Rodriguez', 3, NULL),
+    ('Michael', 'Rodriguez', 3, 3),
     ('Bradley', 'Boyd', 4, 3);
