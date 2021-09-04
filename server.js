@@ -74,7 +74,7 @@ loadMainPrompts = () => {
                     addDepartment()
                     break;
 
-                case 'add a role':
+                case 'Add Role':
                     addRole()
                     break;
 
@@ -199,13 +199,49 @@ async function getRoleTitles() {
     return rows.map(row => row.role_id);
 }
 
+async function getDeptIds() {
+    const query2 = `
+        SELECT id 
+        FROM department
+    `;
+    const rows = await connection.query(query2);
+    return rows.map(row => row.id);
+}
+
 async function getManagers() {
     const query = `
-        SELECT manager_id 
+        SELECT id 
         FROM employee
     `;
     const rows = await connection.query(query);
     console.log(rows)
-    return rows.map(row => row.manager_id);
+    return rows.map(row => row.id);
 }
 
+async function addRole() {
+    inquirer.prompt([
+
+        {
+            type: 'input',
+            message: "What is the new role's name?",
+            name: 'roleName',
+        },
+        {
+            type: 'input',
+            message: "What is the new role's salary?",
+            name: 'roleSalary',
+        },
+        {
+            type: 'list',
+            message: "What is the new role's department ID?",
+            choices: await getDeptIds(),
+            name: 'departmentId',
+        }])
+        .then(function (b) {
+            const query = 'INSERT INTO roles(title, salary, department_id) VALUES (?,?,?)'
+            connection.query(query, [b.roleName, b.roleSalary, b.departmentId], function (err, results) {
+                console.log('=======================')
+            });
+            loadMainPrompts();
+        });
+};
