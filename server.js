@@ -20,8 +20,8 @@ const connection = mysql.createConnection(
         password: 'password',
         database: 'company_db'
     }
-    );
-    connection.query = util.promisify(connection.query);
+);
+connection.query = util.promisify(connection.query);
 
 connection.connect(function (err) {
     if (err) throw err;
@@ -152,49 +152,46 @@ const viewAllRoles = () => {
 }
 
 async function addEmployee() {
-        
-        await inquirer.prompt([
-    
-            {
-                type: 'input',
-                message: "What is the new employee's first name?",
-                name: 'firstName',
-            },
-            {
-                type: 'input',
-                message: "What is the new employee's last name?",
-                name: 'lastName',
-            },
-            {
-                type: 'list',
-                message: "What is the new employee's role?",
-                choices: [ getRoleTitles()],
-                name: 'roleName',
-            },
-            {
-                type: 'input',
-                message: "What is the new employee manager's name?",
-                name: 'managerName',
-            }])
-            .then(function (a) {
-                const query = 'INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)'
-                connection.query(query,[a.firstName, a.lastName, a.roleName, a.managerName], (req, res) => {
-                    console.log('================')
-                    console.table(res);
-                });
-                loadMainPrompts();
+
+    inquirer.prompt([
+
+        {
+            type: 'input',
+            message: "What is the new employee's first name?",
+            name: 'firstName',
+        },
+        {
+            type: 'input',
+            message: "What is the new employee's last name?",
+            name: 'lastName',
+        },
+        {
+            type: 'list',
+            message: "What is the new employee's role?",
+            choices: await getRoleTitles(),
+            name: 'roleName',
+        },
+        {
+            type: 'input',
+            message: "What is the new employee manager's name?",
+            name: 'managerName',
+        }])
+        .then(function (a) {
+            const query = 'INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)'
+            connection.query(query, [a.firstName, a.lastName, a.roleName, a.managerName], (req, res) => {
+                console.log('================')
+                console.table(res);
             });
+            loadMainPrompts();
+        });
 
 };
 
-async function getRoleTitles()  {
-    console.log("somethingsksjgslkjdslkjlsjgklsjdkgl")
+async function getRoleTitles() {
     const query2 = `
         SELECT title 
         FROM roles
     `;
-    const rows =  await connection.query(query2);
-    // connection.end();
-  
+    const rows = await connection.query(query2);
     return rows.map(row => row.title);
 }
