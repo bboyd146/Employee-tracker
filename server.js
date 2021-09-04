@@ -201,11 +201,11 @@ async function getRoleIds() {
 
 async function getRoleNames() {
     const query2 = `
-        SELECT title 
+        SELECT id 
         FROM roles
     `;
     const rows = await connection.query(query2);
-    return rows.map(row => row.title);
+    return rows.map(row => row.id);
 }
 
 async function getDeptIds() {
@@ -307,11 +307,15 @@ async function updateEmpRole() {
             let fullName = u.employeeList.split(" ");
             console.log(fullName);
             let firstName = fullName[0];
+            console.log(firstName)
             let lastName = fullName[1];
-            const query =        ` UPDATE employee
-            SET role_title = ?
-            WHERE first_name = ? AND last_name = ?`;
-            connection.query(query, [u.roleList, firstName, lastName], function (err, results) {
+            console.log(lastName)
+            const query = `
+            UPDATE employee
+            SET role_id = ?
+            WHERE first_name = ? AND last_name = ?
+            `;
+            connection.query(query, [u.roleList, u.firstName, u.lastName], function (err, results) {
                 console.log('================')
             });
             loadMainPrompts();
