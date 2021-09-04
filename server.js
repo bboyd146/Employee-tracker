@@ -170,11 +170,14 @@ async function addEmployee() {
             message: "What is the new employee's role?",
             choices: await getRoleTitles(),
             name: 'roleName',
+            loop: false,
         },
         {
-            type: 'input',
+            type: 'list',
             message: "What is the new employee manager's name?",
+            choices:  await getManagers(),
             name: 'managerName',
+            loop:false,
         }])
         .then(function (a) {
             const query = 'INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)'
@@ -195,3 +198,13 @@ async function getRoleTitles() {
     const rows = await connection.query(query2);
     return rows.map(row => row.title);
 }
+
+async function getManagers() {
+    const query = `
+        SELECT first_name 
+        FROM employee
+    `;
+    const rows = await connection.query(query);
+    return rows.map(row => row.title);
+}
+
