@@ -70,7 +70,7 @@ loadMainPrompts = () => {
                     viewAllEmployees()
                     break;
 
-                case 'add a department':
+                case 'Add Department':
                     addDepartment()
                     break;
 
@@ -183,7 +183,7 @@ async function addEmployee() {
             const query = 'INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)'
             connection.query(query, [a.firstName, a.lastName, a.roleName, a.managerName], (req, res) => {
                 console.log('================')
-                console.table(res);
+                console.log('Added New Employee');
             });
             loadMainPrompts();
         });
@@ -241,7 +241,26 @@ async function addRole() {
             const query = 'INSERT INTO roles(title, salary, department_id) VALUES (?,?,?)'
             connection.query(query, [b.roleName, b.roleSalary, b.departmentId], function (err, results) {
                 console.log('=======================')
+                console.log('Added New Role');
             });
+            loadMainPrompts();
+        });
+};
+
+function addDepartment() {
+    inquirer.prompt([
+        {
+            type: 'input',
+            message: "What is new department name?",
+            name: 'departmentName',
+        }])
+        .then(function (c) {
+            const query = 'INSERT INTO department(dep_name) VALUES (?)'
+            connection.query(query, [c.departmentName], function (err, results) {
+                console.log('================')
+                console.log('Added New Department');
+            });
+            console.log('=======================')
             loadMainPrompts();
         });
 };
