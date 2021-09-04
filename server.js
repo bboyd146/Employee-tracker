@@ -76,7 +76,7 @@ loadMainPrompts = () => {
                     addRole()
                     break;
 
-                case 'add an employee':
+                case 'Add Employee':
                     addEmployee()
                     break;
 
@@ -147,4 +147,51 @@ const viewAllRoles = () => {
     } catch (err) {
         res.json(err);
     }
+}
+
+function addEmployee() {
+
+        
+        inquirer.prompt([
+    
+            {
+                type: 'input',
+                message: "What is the new employee's first name?",
+                name: 'firstName',
+            },
+            {
+                type: 'input',
+                message: "What is the new employee's last name?",
+                name: 'lastName',
+            },
+            {
+                type: 'list',
+                message: "What is the new employee's role?",
+                choices: [getRoleTitles()],
+                name: 'roleName',
+            },
+            {
+                type: 'input',
+                message: "What is the new employee manager's name?",
+                name: 'managerName',
+            }])
+            .then(function (a) {
+                const query = 'INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)'
+                connection.query(query,[a.firstName, a.lastName, a.roleName, a.managerName], (req, res) => {
+                    console.log('================')
+                    console.table(res);
+                });
+                loadMainPrompts();
+            });
+
+};
+
+async function getRoleTitles()  {
+    const query = `
+        SELECT title 
+        FROM role
+    `;
+    const [rows, fields] =  await connection.query(query);
+    connection.end();
+    return rows.map(row => row.title);
 }
