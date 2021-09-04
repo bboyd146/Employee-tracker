@@ -167,14 +167,14 @@ async function addEmployee() {
         },
         {
             type: 'list',
-            message: "What is the new employee's role?",
+            message: "What is the new employee's role id?",
             choices: await getRoleTitles(),
             name: 'roleName',
             loop: false,
         },
         {
             type: 'list',
-            message: "What is the new employee manager's name?",
+            message: "What is the new employee manager's id?",
             choices:  await getManagers(),
             name: 'managerName',
             loop:false,
@@ -192,19 +192,20 @@ async function addEmployee() {
 
 async function getRoleTitles() {
     const query2 = `
-        SELECT title 
-        FROM roles
+        SELECT role_id 
+        FROM employee
     `;
     const rows = await connection.query(query2);
-    return rows.map(row => row.title);
+    return rows.map(row => row.role_id);
 }
 
 async function getManagers() {
     const query = `
-        SELECT first_name 
+        SELECT manager_id 
         FROM employee
     `;
     const rows = await connection.query(query);
-    return rows.map(row => row.title);
+    console.log(rows)
+    return rows.map(row => row.manager_id);
 }
 
