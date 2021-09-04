@@ -82,8 +82,8 @@ loadMainPrompts = () => {
                     addEmployee()
                     break;
 
-                case 'update an employee role':
-                    updateEmployeeRole()
+                case 'Update Employee Role':
+                    updateEmpRole()
                     break;
 
                 case 'Quit':
@@ -168,7 +168,7 @@ async function addEmployee() {
         {
             type: 'list',
             message: "What is the new employee's role id?",
-            choices: await getRoleTitles(),
+            choices: await getRoleIds(),
             name: 'roleName',
             loop: false,
         },
@@ -190,13 +190,22 @@ async function addEmployee() {
 
 };
 
-async function getRoleTitles() {
+async function getRoleIds() {
     const query2 = `
         SELECT role_id 
         FROM employee
     `;
     const rows = await connection.query(query2);
     return rows.map(row => row.role_id);
+}
+
+async function getRoleNames() {
+    const query2 = `
+        SELECT title 
+        FROM roles
+    `;
+    const rows = await connection.query(query2);
+    return rows.map(row => row.title);
 }
 
 async function getDeptIds() {
@@ -216,6 +225,19 @@ async function getManagers() {
     const rows = await connection.query(query);
     console.log(rows)
     return rows.map(row => row.id);
+}
+
+async function getEmployees() {
+    const query = `
+        SELECT
+         employee.first_name, 
+        employee.last_name, 
+        CONCAT(employee.first_name, ' ', employee.last_name) As employee
+        FROM employee
+    `;
+    const rows = await connection.query(query);
+    console.log(rows)
+    return rows.map(row => row.employee);
 }
 
 async function addRole() {
@@ -261,6 +283,37 @@ function addDepartment() {
                 console.log('Added New Department');
             });
             console.log('=======================')
+            loadMainPrompts();
+        });
+};
+
+async function updateEmpRole() {
+    inquirer.prompt([
+
+        {
+            type: 'list',
+            message: "Select employee",
+            name: 'employeeList',
+            choices: await getEmployees(),
+        },
+        {
+            type: 'list',
+            message: "Select new role",
+            name: 'roleList',
+            choices: await getRoleNames(),
+        }])
+        .then(function (u) {
+            
+            let fullName = u.employeeList.split(" ");
+            console.log(fullName);
+            let firstName = fullName[0];
+            let lastName = fullName[1];
+            const query =        ` UPDATE employee
+            SET role_title = ?
+            WHERE first_name = ? AND last_name = ?`;
+            connection.query(query, [u.roleList, firstName, lastName], function (err, results) {
+                console.log('================')
+            });
             loadMainPrompts();
         });
 };
