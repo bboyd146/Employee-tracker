@@ -1,6 +1,7 @@
 // const getConnection = require('./config/connection');
 // const express = require('express');
 // const app = express();
+const util = require('util');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 require('console.table');
@@ -19,11 +20,12 @@ const connection = mysql.createConnection(
         password: 'password',
         database: 'company_db'
     }
-);
+    );
+    connection.query = util.promisify(connection.query);
 
-// connection.connect(function (err) {
-//     if (err) throw err;
-// })
+connection.connect(function (err) {
+    if (err) throw err;
+})
 
 // app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
@@ -149,10 +151,9 @@ const viewAllRoles = () => {
     }
 }
 
-function addEmployee() {
-
+async function addEmployee() {
         
-        inquirer.prompt([
+        await inquirer.prompt([
     
             {
                 type: 'input',
@@ -167,7 +168,7 @@ function addEmployee() {
             {
                 type: 'list',
                 message: "What is the new employee's role?",
-                choices: [getRoleTitles()],
+                choices: [ getRoleTitles()],
                 name: 'roleName',
             },
             {
@@ -187,11 +188,13 @@ function addEmployee() {
 };
 
 async function getRoleTitles()  {
-    const query = `
+    console.log("somethingsksjgslkjdslkjlsjgklsjdkgl")
+    const query2 = `
         SELECT title 
-        FROM role
+        FROM roles
     `;
-    const [rows, fields] =  await connection.query(query);
-    connection.end();
+    const rows =  await connection.query(query2);
+    // connection.end();
+  
     return rows.map(row => row.title);
 }
