@@ -1,17 +1,10 @@
-// const getConnection = require('./config/connection');
-// const express = require('express');
-// const app = express();
 const util = require('util');
 const inquirer = require('inquirer');
 const mysql = require('mysql2');
 require('console.table');
-// const connection = getConnection();
 
 
-// const PORT = process.env.PORT || 3000;
 
-// app.use(express.urlencoded({ extended: false }));
-// app.use(express.json());
 
 const connection = mysql.createConnection(
     {
@@ -27,7 +20,6 @@ connection.connect(function (err) {
     if (err) throw err;
 })
 
-// app.listen(PORT, () => console.log(`listening on port ${PORT}`));
 
 loadMainPrompts = () => {
 
@@ -55,7 +47,7 @@ loadMainPrompts = () => {
         }
     ])
         .then((data) => {
-            console.log(data.choice)
+            // console.log(data.choice)
 
             switch (data.choice) {
                 case "View All Departments":
@@ -170,14 +162,14 @@ async function addEmployee() {
             message: "What is the new employee's role id?",
             choices: await getRoleIds(),
             name: 'roleName',
-            loop: false,
+
         },
         {
             type: 'list',
             message: "What is the new employee manager's id?",
-            choices:  await getManagers(),
+            choices: await getManagers(),
             name: 'managerName',
-            loop:false,
+
         }])
         .then(function (a) {
             const query = 'INSERT INTO employee(first_name, last_name, role_id, manager_id) VALUES (?,?,?,?)'
@@ -223,20 +215,20 @@ async function getManagers() {
         FROM employee
     `;
     const rows = await connection.query(query);
-    console.log(rows)
+
     return rows.map(row => row.id);
 }
 
 async function getEmployees() {
     const query = `
         SELECT
-         employee.first_name, 
+        employee.first_name, 
         employee.last_name, 
         CONCAT(employee.first_name, ' ', employee.last_name) As employee
         FROM employee
     `;
     const rows = await connection.query(query);
-    console.log(rows)
+
     return rows.map(row => row.employee);
 }
 
@@ -298,24 +290,21 @@ async function updateEmpRole() {
         },
         {
             type: 'list',
-            message: "Select new role",
+            message: "Select new role's id",
             name: 'roleList',
             choices: await getRoleNames(),
         }])
         .then(function (u) {
-            
+
             let fullName = u.employeeList.split(" ");
-            console.log(fullName);
             let firstName = fullName[0];
-            console.log(firstName)
             let lastName = fullName[1];
-            console.log(lastName)
             const query = `
             UPDATE employee
             SET role_id = ?
             WHERE first_name = ? AND last_name = ?
             `;
-            connection.query(query, [u.roleList, u.firstName, u.lastName], function (err, results) {
+            connection.query(query, [u.roleList, firstName, lastName], function (err, results) {
                 console.log('================')
             });
             loadMainPrompts();
