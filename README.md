@@ -13,7 +13,7 @@ This project is a CLI content management system for managing a company's employe
 - [Features](#Features)
 - [Tests](#Tests)
 - [Questions](#Questions)
-- [Video](#Walkthrough Video)
+- [Video](#Walkthrough-Video)
 
 ## Installation 
 The user should clone the repository from GitHub. This application requires Node.js, Inquirer, console.table and mysql2.Run 'npm install' to receive necessary packages. To start application run 'npm start'.
