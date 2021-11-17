@@ -2,6 +2,9 @@
  
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+
+<img width="651" alt="Screen Shot 2021-09-11 at 4 55 59 PM" src="https://user-images.githubusercontent.com/82745040/142091086-0735ab77-9496-40ba-a007-4bd063718a17.png">
+
 ## Description
 This project is a CLI content management system for managing a company's employees using node, inquirer, and MySQL.
 
